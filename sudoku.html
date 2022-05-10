@@ -1,0 +1,239 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Sudoku</title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+    integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <style>
+    table {
+      border: 2px solid black;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    .marked {
+      background-color: cyan !important;
+    }
+
+    .square {
+      padding: 1px;
+      background-color: black;
+    }
+
+    .line {
+      background-color: white;
+      display: flex;
+    }
+
+    .number {
+      width: -webkit-fill-available;
+      border: 1px solid black;
+      border-collapse: collapse;
+      font-size: 20px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    .header {
+      color: white;
+      text-align: center;
+      padding: 20px;
+      background-color: #104db8;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    .content {
+      padding: 20px;
+      min-height: 100%;
+      margin: 0 auto -50px;
+    }
+
+    .footer,
+    .push {
+      padding: 5px;
+      height: auto;
+    }
+  </style>
+  <script type="text/javascript">
+    var speed = 1
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function createGrid() {
+      const sudokuBody = document.querySelector('#bsudoku')
+      for (let x = 0; x < 3; x++) {
+        const column = document.createElement("div")
+        for (let y = 0; y < 3; y++) {  // quadrado
+          const square = document.createElement("div");
+          square.className = 'square'
+          const mySquare = y * 3 + x
+          square.setAttribute('id', `square-${mySquare}`);
+          for (let i = 0; i < 3; i++) {  // linhas do quadrado
+            const line = document.createElement('div');
+            line.className = 'line'
+            line.setAttribute('id', `line-${i}`);
+            for (let j = 0; j < 3; j++) {
+              const number = document.createElement("div")
+              number.className = 'number'
+              const numberPosition = j % 3 + 1
+              number.onmouseover = () => {
+                const startHorizontalSquare = Math.floor(y / 3 * 10)
+                document.querySelector(`#square-${mySquare} #line-${0}`).className = 'line marked'
+                document.querySelector(`#square-${mySquare} #line-${1}`).className = 'line marked'
+                document.querySelector(`#square-${mySquare} #line-${2}`).className = 'line marked'
+                const verticalSquare = mySquare % 3
+                for (let index = 0; index < 3; index++) {
+                  document.querySelector(`#square-${startHorizontalSquare + index} #line-${i}`).className = 'line marked'
+                  const startVerticalSquare = verticalSquare + (index * 3)
+                  document.querySelector(`#square-${startVerticalSquare} #line-${0} :nth-child(${numberPosition})`).className = 'number marked'
+                  document.querySelector(`#square-${startVerticalSquare} #line-${1} :nth-child(${numberPosition})`).className = 'number marked'
+                  document.querySelector(`#square-${startVerticalSquare} #line-${2} :nth-child(${numberPosition})`).className = 'number marked'
+                }
+              }
+              number.onmouseleave = () => {
+                const startHorizontalSquare = Math.floor(y / 3 * 10)
+                document.querySelector(`#square-${mySquare} #line-${0}`).className = 'line'
+                document.querySelector(`#square-${mySquare} #line-${1}`).className = 'line'
+                document.querySelector(`#square-${mySquare} #line-${2}`).className = 'line'
+                const verticalSquare = mySquare % 3
+                for (let index = 0; index < 3; index++) {
+                  document.querySelector(`#square-${startHorizontalSquare + index} #line-${i}`).className = 'line'
+                  const startVerticalSquare = verticalSquare + (index * 3)
+                  document.querySelector(`#square-${startVerticalSquare} #line-${0} :nth-child(${numberPosition})`).className = 'number'
+                  document.querySelector(`#square-${startVerticalSquare} #line-${1} :nth-child(${numberPosition})`).className = 'number'
+                  document.querySelector(`#square-${startVerticalSquare} #line-${2} :nth-child(${numberPosition})`).className = 'number'
+                }
+              }
+              line.appendChild(number);
+            }
+            square.appendChild(line)
+          }
+          column.appendChild(square)
+        }
+        sudokuBody.appendChild(column)
+      }
+    }
+
+    async function fillGrid() {
+      const grid = []
+      const square = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      for (i = 0; i < 9; i++) { // cria os 9 quadrados
+        square.sort(function (a, b) { return 0.5 - Math.random() });
+        //validar a ordem do square para ser valido no grid
+        // while (!isValidSquare(square, grid, i)) {
+        //   square.sort(function (a, b) { return 0.5 - Math.random() });
+        // }
+        grid[i] = [...square] //getValidArray(square, grid, i)
+        for (j = 0; j < 9; j++) { // colocar na tela o quadrado
+          document.querySelector(`#sudoku #square-${i} #line-${Math.floor(j / 3)} :nth-child(${1 + (j % 3)})`).innerHTML = grid[i][j]
+        }
+      }
+    }
+
+    function isValidSquare(square, grid, mySquare) {
+      if (mySquare > 0) { // ñ precisa checar se é o primeiro
+        const horizontalAmount = mySquare % 3 // quantos quadrados precisa checar horizontalmente     
+        const verticalAmount = Math.floor(mySquare / 3) // quantos quadrados precisa checar verticalmente   
+        for (let i = 0; i < square.length; i++) {
+          for (let x = 0; x < verticalAmount; x++) {
+            if (grid[(mySquare % 3) + (x * 3)][Math.floor(i % 3) + 0] === square[i]) {
+              return false
+            }
+            if (grid[(mySquare % 3) + (x * 3)][Math.floor(i % 3) + 3] === square[i]) {
+              return false
+            }
+            if (grid[(mySquare % 3) + (x * 3)][Math.floor(i % 3) + 6] === square[i]) {
+              return false
+            }
+          }
+          for (let x = 0; x < horizontalAmount; x++) {
+            if (grid[x + (Math.floor(mySquare / 3) * 3)][Math.floor(i / 3) * 3 + 0] === square[i]) {
+              return false
+            }
+            if (grid[x + (Math.floor(mySquare / 3) * 3)][Math.floor(i / 3) * 3 + 1] === square[i]) {
+              return false
+            }
+            if (grid[x + (Math.floor(mySquare / 3) * 3)][Math.floor(i / 3) * 3 + 2] === square[i]) {
+              return false
+            }
+          }
+        }
+      }
+      return true
+    }
+
+    function init() {
+      document.getElementById('speed_input').setAttribute('value', speed)
+      createGrid()
+      fillGrid()
+    }
+
+    window.onload = init
+    function setSpeed(value) {
+      speed = value
+      document.getElementById('speed_input').setAttribute('value', speed)
+    }
+
+  </script>
+</head>
+<header class="header">
+  <h1 style="text-align: center;">Sudoku</h1>
+</header>
+
+<body>
+  <div class="content">
+    <div class="container">
+      <!-- SUDOKU -->
+      <table id="sudoku" class="table" style="width: auto">
+        <tbody id="bsudoku" style="display: flex">
+        </tbody>
+      </table>
+      <!-- CONFIG -->
+      <fieldset style="border: 1px groove;">
+        <legend style="text-align: center; width: 30%; font-size: 30px;">Velocidade</legend>
+        <div class="container text-center m-3">
+          <form id="btn-fita">
+            Velocidade(ms): <input id="speed_input" oninput="setSpeed(this.value)" style="width: 65px" type="text"
+              placeholder="1000">
+            <input type="button" id="start" value="Iniciar">
+            <input type="button" id="passo" value="Passo">
+            <input style="visibility: hidden" type="button" id="pause" value="Pausar">
+          </form>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+</body>
+
+<footer class="footer" style="background-color: #104db8;">
+  <div class="mt-3 text-center" style="color: white;">
+    <p><u>MEMBROS DO GRUPO</u></p>
+    <p>Gustavo Riedel</p>
+    <p>Natália Krein</p>
+    <p>Suriel Gonçalves</p>
+  </div>
+</footer>
+
+</html>
