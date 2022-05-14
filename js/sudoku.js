@@ -18,6 +18,42 @@ function changebgColor() {
   }
 }
 
+function Upload(){
+  var fileUpload = document.getElementById("file-upload");
+  var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+  if(fileUpload.value){
+    if (regex.test(fileUpload.value.toLowerCase())) {
+      if (typeof (FileReader) !== "undefined") {
+        var reader = new FileReader();
+        reader.onload = async (e) => {
+          var arrays = e.target.result.split("\n");
+          const board = []
+          for (var i = 0; i < arrays.length; i++) {
+            const indexes = arrays[i].split(",");
+            if(indexes.length === 9){
+              board.push([])
+              for (var j = 0; j < indexes.length; j++) {
+                const number = Number(indexes[j])
+                board[i].push(isNaN(number) ? undefined : (number > 9 || number < 1) ? undefined : number );
+              }
+            }              
+          }
+          for (let y = 0; y < 9; y++) {
+            for (let x = 0; x < 9; x++) {
+              document.getElementById(`xy${x}${y}`).style.backgroundColor = "white"; //preenche o grid com alguns espaços vazios
+              document.getElementById(`xy${x}${y}`).value = board[y][x]
+              await sleep(10);
+            }
+          }
+        }
+        reader.readAsText(fileUpload.files[0]);
+      }
+    } else {
+        alert("Formato incorreto de arquivo CSV.");
+    }
+  }
+}
+
 //criar um delay entre algumas funções
  function sleep (milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));

@@ -1,67 +1,58 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sudoku</title>
-    <script src="js/sudoku.js"></script>
-    <link href="css/style.css" rel="stylesheet" />
-  </head>
 
-  <body>
-    <div class="container">
-      <div class="container-header">
-        <div class="container-header-center">
-          <div class="container-header-data">
-            <h1 class="container-title">Sudoku</h1>
-            <p class="container-p">
-              Digite um sudoku válido para ser resolvido ou importe um arquivo
-              csv
-            </p>
-          </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sudoku</title>
+  <script src="js/sudoku.js"></script>
+  <link href="css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="container-header">
+      <div class="container-header-center">
+        <div class="container-header-data">
+          <h1 class="container-title">Sudoku</h1>
+          <p class="container-p">
+            Digite um sudoku válido para ser resolvido ou importe um arquivo
+            csv
+          </p>
         </div>
-      </div>
-
-      <div class="container-body">
-        <form onsubmit="return false" id="board" class="container-form"></form>
-
-        <div class="container-buttons">
-          <button
-            form="board"
-            id="startbtn"
-            class="button"
-            type="submit"
-            onclick="start()"
-          >
-            Resolver
-          </button>
-
-          <button id="resetbtn" class="button" type="submit" onclick="reset()">
-            Reset
-          </button>
-          <button
-            id="generatepuzzlebtn"
-            class="button"
-            type="submit"
-            onclick="generatepuzzle()"
-          >
-            Gerar
-          </button>
-          <label for="file-upload" class="button"> CSV </label>
-          <input id="file-upload" type="file" onclick="Upload()" />
-        </div>
-      </div>
-      <div class="container-footer">
-        <p class="container-name">
-          Carlos César Cassol Filho, Gustavo Adriano Riedel Bueno, Natália Krein
-          e Suriel Artur Rogowski Gonçalves
-        </p>
       </div>
     </div>
 
-    <script>
-      createboard();
-    </script>
-  </body>
+    <div class="container-body">
+      <form onsubmit="return false" id="board" class="container-form"></form>
+
+      <div class="container-buttons">
+        <button form="board" id="startbtn" class="button" type="submit" onclick="start()">
+          Resolver
+        </button>
+
+        <button id="resetbtn" class="button" type="submit" onclick="reset()">
+          Reset
+        </button>
+        <button id="generatepuzzlebtn" class="button" type="submit" onclick="generatepuzzle()">
+          Gerar
+        </button>
+        <label for="file-upload" class="button"> CSV </label>
+        <input id="file-upload" type="file" accept=".csv" onchange="Upload()" />
+      </div>
+    </div>
+    <div class="container-footer">
+      <p class="container-name">
+        Carlos César Cassol Filho, Gustavo Adriano Riedel Bueno, Natália Krein
+        e Suriel Artur Rogowski Gonçalves
+      </p>
+    </div>
+  </div>
+
+  <script>
+    createboard();
+  </script>
+</body>
+
 </html>
