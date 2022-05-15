@@ -141,6 +141,7 @@ async function start() {
     document.getElementById("file-upload").disabled = false;
     document.getElementById("generatepuzzlebtn").disabled = false;
   }
+  errors = 0
 };
 
 //obtem todos os 81 valores de entrada e retorna em uma matriz
