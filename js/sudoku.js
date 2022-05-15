@@ -2,7 +2,6 @@
 
 import format from "./format.js";
 
-var canReset = false
 var errors = 0
 
 //muda todos os inputs pra fundo branco
@@ -140,6 +139,8 @@ async function start() {
     document.getElementById("resetbtn").disabled = false;
     document.getElementById("file-upload").disabled = false;
     document.getElementById("generatepuzzlebtn").disabled = false;
+    document.getElementById(`loader`).className = ''
+    document.getElementById(`loader`).innerHTML = 'Resolver'
   }
   errors = 0
 };
@@ -282,7 +283,6 @@ function check(x, y, v, sudoku) {
 
 //gera um sudoku aleatório com pelo menos uma solução válida
 async function generatepuzzle() {
-  canReset = true
   //desativar botões quando começa a gerar quebra-cabeça
   document.getElementById("startbtn").disabled = true;
   document.getElementById("resetbtn").disabled = true;
@@ -336,7 +336,6 @@ async function generatepuzzle() {
 
 //redefine o grid, deixando todas as entradas vazias
 export async function reset() {
-  if(canReset){
     document.getElementById("startbtn").disabled = true;
     document.getElementById("resetbtn").disabled = true;
     document.getElementById("generatepuzzlebtn").disabled = true;
@@ -352,8 +351,6 @@ export async function reset() {
     document.getElementById("resetbtn").disabled = false;
     document.getElementById("generatepuzzlebtn").disabled = false;
     document.getElementById("file-upload").disabled = false;
-    canReset = false
-  }  
 };
 
 createboard()
