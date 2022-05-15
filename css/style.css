@@ -41,6 +41,16 @@ body {
   width: 100%;
 }
 
+.info-text {
+  padding: 8px 32px;
+  font-family: "Inter";
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 19px;
+  letter-spacing: 0.05em;
+  color: #307df6;
+}
+
 .container-header {
   padding: 2rem 0;
   display: flex;

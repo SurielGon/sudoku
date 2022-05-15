@@ -26,12 +26,10 @@
 
     <div class="container-body">
       <form onsubmit="return false" id="board" class="container-form"></form>
-
       <div class="container-buttons">
         <button form="board" id="startbtn" class="button" type="submit" onclick="start()">
           Resolver
         </button>
-
         <button id="resetbtn" class="button" type="submit" onclick="reset()">
           Reset
         </button>
@@ -41,6 +39,10 @@
         <label for="file-upload" class="button"> CSV </label>
         <input id="file-upload" type="file" accept=".csv" onchange="Upload()" />
       </div>
+      <spam class="info-text">Tempo: <spam id="time">0 ms</spam>
+      </spam>
+      <spam class="info-text">Erros: <spam id="errors">0</spam>
+      </spam>
     </div>
     <div class="container-footer">
       <p class="container-name">

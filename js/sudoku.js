@@ -1,5 +1,7 @@
 "use strict";
 
+var errors = 0
+
 //muda todos os inputs pra fundo branco
 function changebgwhite() {
   for (let y = 0; y < 9; y++) {
@@ -104,17 +106,21 @@ async function start() {
   let puzzle = getpuzzle();
   //sudoku só é resolvido se for válido ou tenha pelo menos uma solução
   if (validBoard(puzzle)) {
+    const start = +new Date();
     const solved = solve(getpuzzle());
+    const executionTime = +new Date() - start;
     for (let y = 0; y < 9; y++) {
       for (let x = 0; x < 9; x++) {
         if (puzzle[y][x] == "") {
           document.getElementById(`xy${x}${y}`).style.backgroundColor =
             "#D4DBE8";
           document.getElementById(`xy${x}${y}`).value = solved[y][x];
-          await sleep(40);
+          await sleep(20);
         }
       }
     }
+    document.getElementById("time").innerHTML = `${executionTime} ms`;
+    document.getElementById("errors").innerHTML = errors;
     document.getElementById("startbtn").disabled = false;
     document.getElementById("resetbtn").disabled = false;
     document.getElementById("generatepuzzlebtn").disabled = false;
@@ -225,6 +231,7 @@ function solve(puzzle) {
                 //se a entrada da posição m, n não estiver vazia, significa que o sudoku foi resolvido (m, n é a última posição vazia na matriz original)
                 return puzzle; //retorna o sudoku resolvido
               }
+              errors++
               puzzle[y][x] = "";
             }
           }
@@ -305,7 +312,7 @@ async function generatepuzzle() {
     for (let x = 0; x < 9; x++) {
       document.getElementById(`xy${x}${y}`).style.backgroundColor = "white"; //preenche o grid com alguns espaços vazios
       document.getElementById(`xy${x}${y}`).value = emptypuzzle[y][x];
-      await sleep(20);
+      await sleep(10);
     }
   }
   document.getElementById("startbtn").disabled = false;
