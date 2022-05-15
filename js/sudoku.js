@@ -1,5 +1,8 @@
 "use strict";
 
+import format from "./format.js";
+
+var canReset = false
 var errors = 0
 
 //muda todos os inputs pra fundo branco
@@ -20,7 +23,7 @@ function changebgColor() {
   }
 }
 
-function Upload(){
+function upload(){
   var fileUpload = document.getElementById("file-upload");
   var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
   if(fileUpload.value){
@@ -99,7 +102,10 @@ function createboard() {
 async function start() {
   //desativa os botões quando começa a resolver o sudoku
   document.getElementById("startbtn").disabled = true;
+  document.getElementById(`loader`).className = 'loader'
+  document.getElementById(`loader`).innerHTML = ''
   document.getElementById("resetbtn").disabled = true;
+  document.getElementById("file-upload").disabled = true;
   document.getElementById("generatepuzzlebtn").disabled = true;
   await sleep(500);
   changebgwhite();
@@ -107,7 +113,9 @@ async function start() {
   //sudoku só é resolvido se for válido ou tenha pelo menos uma solução
   if (validBoard(puzzle)) {
     const start = +new Date();
-    const solved = solve(getpuzzle());
+    const solved = await solve(getpuzzle());
+    document.getElementById(`loader`).className = ''
+    document.getElementById(`loader`).innerHTML = 'Resolver'
     const executionTime = +new Date() - start;
     for (let y = 0; y < 9; y++) {
       for (let x = 0; x < 9; x++) {
@@ -119,16 +127,18 @@ async function start() {
         }
       }
     }
-    document.getElementById("time").innerHTML = `${executionTime} ms`;
-    document.getElementById("errors").innerHTML = errors;
+    document.getElementById("time").innerHTML = `${format('###.###,',executionTime)} ms`;
+    document.getElementById("errors").innerHTML = format('###.###,',errors);
     document.getElementById("startbtn").disabled = false;
     document.getElementById("resetbtn").disabled = false;
+    document.getElementById("file-upload").disabled = false;
     document.getElementById("generatepuzzlebtn").disabled = false;
   }
   //se não for válido, habilita os botões e nada acontece
   else {
     document.getElementById("startbtn").disabled = false;
     document.getElementById("resetbtn").disabled = false;
+    document.getElementById("file-upload").disabled = false;
     document.getElementById("generatepuzzlebtn").disabled = false;
   }
 };
@@ -204,7 +214,7 @@ function validBoard(board) {
 }
 
 //função chamada para resolver o sudoku se tiver pelo menos uma solução válida
-function solve(puzzle) {
+async function solve(puzzle) {
   let m = 0;
   let n = 0;
 
@@ -271,9 +281,11 @@ function check(x, y, v, sudoku) {
 
 //gera um sudoku aleatório com pelo menos uma solução válida
 async function generatepuzzle() {
+  canReset = true
   //desativar botões quando começa a gerar quebra-cabeça
   document.getElementById("startbtn").disabled = true;
   document.getElementById("resetbtn").disabled = true;
+  document.getElementById("file-upload").disabled = true;
   document.getElementById("generatepuzzlebtn").disabled = true;
   let emptypuzzle = [
     ["", "", "", "", "", "", "", "", ""],
@@ -301,7 +313,7 @@ async function generatepuzzle() {
     p.splice(r, 1);
   }
 
-  emptypuzzle = solve(emptypuzzle); //resolve com 9 números
+  emptypuzzle = await solve(emptypuzzle); //resolve com 9 números
 
   for (let n = 0; n < 70; n++) {
     emptypuzzle[Math.floor(Math.random() * 9)][Math.floor(Math.random() * 9)] =
@@ -318,21 +330,33 @@ async function generatepuzzle() {
   document.getElementById("startbtn").disabled = false;
   document.getElementById("resetbtn").disabled = false;
   document.getElementById("generatepuzzlebtn").disabled = false;
+  document.getElementById("file-upload").disabled = false;
 };
 
 //redefine o grid, deixando todas as entradas vazias
-async function reset() {
-  document.getElementById("startbtn").disabled = true;
-  document.getElementById("resetbtn").disabled = true;
-  document.getElementById("generatepuzzlebtn").disabled = true;
-  for (let y = 0; y < 9; y++) {
-    for (let x = 0; x < 9; x++) {
-      document.getElementById(`xy${x}${y}`).style.backgroundColor = "white";
-      document.getElementById(`xy${x}${y}`).value = "";
-      await sleep(10);
+export async function reset() {
+  if(canReset){
+    document.getElementById("startbtn").disabled = true;
+    document.getElementById("resetbtn").disabled = true;
+    document.getElementById("generatepuzzlebtn").disabled = true;
+    document.getElementById("file-upload").disabled = true;
+    for (let y = 0; y < 9; y++) {
+      for (let x = 0; x < 9; x++) {
+        document.getElementById(`xy${x}${y}`).style.backgroundColor = "white";
+        document.getElementById(`xy${x}${y}`).value = "";
+        await sleep(10);
+      }
     }
-  }
-  document.getElementById("startbtn").disabled = false;
-  document.getElementById("resetbtn").disabled = false;
-  document.getElementById("generatepuzzlebtn").disabled = false;
+    document.getElementById("startbtn").disabled = false;
+    document.getElementById("resetbtn").disabled = false;
+    document.getElementById("generatepuzzlebtn").disabled = false;
+    document.getElementById("file-upload").disabled = false;
+    canReset = false
+  }  
 };
+
+createboard()
+document.getElementById("startbtn").onclick = start
+document.getElementById("resetbtn").onclick = reset
+document.getElementById("generatepuzzlebtn").onclick = generatepuzzle
+document.getElementById("file-upload").onchange = upload

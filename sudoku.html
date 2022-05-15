@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sudoku</title>
-  <script src="js/sudoku.js"></script>
+  <script type='module' src="js/sudoku.js"></script>
   <link href="css/style.css" rel="stylesheet" />
 </head>
 
@@ -27,17 +27,17 @@
     <div class="container-body">
       <form onsubmit="return false" id="board" class="container-form"></form>
       <div class="container-buttons">
-        <button form="board" id="startbtn" class="button" type="submit" onclick="start()">
-          Resolver
+        <button form="board" id="startbtn" class="button" type="submit">
+          <div id="loader">Resolver</div>
         </button>
-        <button id="resetbtn" class="button" type="submit" onclick="reset()">
+        <button id="resetbtn" class="button" type="submit">
           Reset
         </button>
-        <button id="generatepuzzlebtn" class="button" type="submit" onclick="generatepuzzle()">
+        <button id="generatepuzzlebtn" class="button" type="submit">
           Gerar
         </button>
+        <input class="input" id="file-upload" type="file" accept=".csv" />
         <label for="file-upload" class="button"> CSV </label>
-        <input id="file-upload" type="file" accept=".csv" onchange="Upload()" />
       </div>
       <spam class="info-text">Tempo: <spam id="time">0 ms</spam>
       </spam>
@@ -51,10 +51,6 @@
       </p>
     </div>
   </div>
-
-  <script>
-    createboard();
-  </script>
 </body>
 
 </html>
