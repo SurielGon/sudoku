@@ -127,8 +127,8 @@ async function start() {
         }
       }
     }
-    document.getElementById("time").innerHTML = `${format('###.###,',executionTime)} ms`;
-    document.getElementById("errors").innerHTML = format('###.###,',errors);
+    document.getElementById("time").innerHTML = `${executionTime ? format('###.###,',executionTime) : 0} ms`;
+    document.getElementById("errors").innerHTML = errors ? format('###.###,',errors) : 0;
     document.getElementById("startbtn").disabled = false;
     document.getElementById("resetbtn").disabled = false;
     document.getElementById("file-upload").disabled = false;
